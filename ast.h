@@ -1,6 +1,8 @@
 #ifndef _AST_H_
 #define _AST_H_
- 
+
+#include <stdio.h>
+
 typedef struct AST AST; 
  
 struct AST {
@@ -29,7 +31,7 @@ struct AST {
 };    
 
 AST* ast_new(AST ast);
-//void ast_free(AST* ptr);
+void ast_asm_print(AST* ptr, FILE* asm_file);
 void ast_print(AST* ptr);
 
 #endif
