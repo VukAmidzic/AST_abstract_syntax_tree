@@ -1,6 +1,6 @@
 ## About
 This is an attempt to make an AST abstract syntax tree in C
-that currently supports addition,substraction, multiplication
+that currently supports addition,subtraction, multiplication
 and division.
 
 ## Running the program
@@ -18,4 +18,4 @@ after which you need to write
 echo $?
 ```
 to see the result of a tree in main.c.
-You can also change the tree to you liking.
+You can also change the tree to your liking.
