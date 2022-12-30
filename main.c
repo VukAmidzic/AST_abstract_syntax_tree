@@ -11,24 +11,21 @@ int main(int argc, char** argv) {
         return 1;
     }
     
-    //example term = 4 + 2 * 10 + 3 * (5 + 1)
-    AST *term = AST_NEW(AST_MAIN,
-        AST_NEW(AST_ADD,
-        AST_NEW(AST_NUMBER, 5),
-        AST_NEW(AST_ADD,
-            AST_NEW(AST_MUL, 
-            AST_NEW(AST_NUMBER, 2), 
-            AST_NEW(AST_NUMBER, 10),
+    //example term = (5 + 1) * 2 / 3 + 1
+    AST* term = AST_NEW(AST_MAIN,
+        AST_NEW(AST_ADD, 
+            AST_NEW(AST_IDIV, 
+                AST_NEW(AST_MUL,
+                    AST_NEW(AST_ADD, 
+                        AST_NEW(AST_NUMBER, 5),
+                        AST_NEW(AST_NUMBER, 1)
+                    ),
+                    AST_NEW(AST_NUMBER, 2)
+                ),    
+                AST_NEW(AST_NUMBER, 3)
             ),
-            AST_NEW(AST_MUL,
-            AST_NEW(AST_NUMBER, 3),
-            AST_NEW(AST_ADD,
-                AST_NEW(AST_NUMBER, 5),
-                AST_NEW(AST_NUMBER, 1),
-            ),
-            ),
-        ),
-        ),
+            AST_NEW(AST_NUMBER, 1)
+        )
     );
 
     ast_print(term);
