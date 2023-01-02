@@ -1,6 +1,6 @@
-#include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "ast.h"
 
 AST* ast_new(AST ast) {
     AST* ptr = malloc(sizeof(AST));

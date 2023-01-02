@@ -1,9 +1,18 @@
-test: main test.s
-	./main test.s && gcc -m64 -masm=intel test.s -o test
+test: parser
+	./parser test.s
 
-main: main.c ast.c
-	gcc -Wall -Wextra -Wswitch -Wimplicit-fallthrough ast.c main.c -o main
+parser: ast.c lex.yy.c parser.tab.c
+	gcc -Wall -Wextra ast.c lex.yy.c parser.tab.c -o parser 
+
+lex.yy.c: lexer.l
+	lex lexer.l
+
+parser.tab.h parser.tab.c: parser.y
+	bison -d parser.y
+
+.PHONY: clean compile_asm run_asm
+compile_asm: 
+	gcc -m64 -masm=intel test.s -o test 
 	
-.PHONY: clean
-clean: 
-	rm -rf main test
+clean:
+	rm -r *.tab.* *.yy.* test parser

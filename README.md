@@ -1,21 +1,31 @@
 ## About
 This is an attempt to make an AST abstract syntax tree in C
 that currently supports addition,subtraction, multiplication
-and division.
+and division, and also makes an assembly code.
 
 ## Running the program
-Type 
+First, type
 ```
 make
 ```
-to generate an assembly code written in 'test' file.
-Then, run that file 
+to compile and run the parser.
+The result after parsing will be a constructed AST
+syntax tree.
+
+Once you've written you arithmetic term, type
+```
+make compile_asm
+```
+to translate AST syntax tree to assembly code.
+At the end, type
 ```
 ./test
-```
-after which you need to write 
-```
 echo $?
 ```
-to see the result of a tree in main.c.
-You can also change the tree to your liking.
+to see the result of your term.
+To run your program again, type
+```
+make clean
+```
+and repeat the procedure from beginning. 
+

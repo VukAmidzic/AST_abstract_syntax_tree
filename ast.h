@@ -1,7 +1,7 @@
 #ifndef _AST_H_
 #define _AST_H_
 
-#include <stdio.h>
+#define AST_NEW(tag, ...) ast_new((AST){tag, {.tag=(struct tag){__VA_ARGS__}}})
 
 typedef struct AST AST; 
  
