@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h> 
+    #include <string.h>
     #include "ast.h"
     
     #define YYDEBUG 1
@@ -9,6 +10,7 @@
     void yyerror(char* s) {
         fprintf(stderr, "%s\n", s);
     }
+    
     AST* term = NULL;
 %}
 
@@ -20,14 +22,16 @@
 %type<node> E T F program
 %token<number> NUM 
 
-%token PLUS MINUS MUL DIV LP RP
+%left PLUS MINUS MUL DIV
+%token LP RP
+//%token GREAT LESS EQ NEQ GEQ LEQ
 
 %start program
 %%
 program     : E {
-        $$ = $1;
-        term = AST_NEW(AST_MAIN, $$);
-    }
+                $$ = $1;
+                term = AST_NEW(AST_MAIN, $$);
+            }
             | {}
 ;
 
@@ -47,13 +51,8 @@ F   : LP E RP {$$ = $2;}
 
 %%
 
-int main(int argc, char** argv) {
+int main(int argc, char* argv[]) {
     FILE* asm_file = fopen(argv[1], "w");
-    if (asm_file == NULL) {
-        fprintf(stderr, "Can't open file...\n");
-        return 1;
-    }
-
     yydebug = 0;
     
     yyparse();

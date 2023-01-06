@@ -6,6 +6,7 @@
     #include <stdlib.h>
     #include "ast.h"
     #include "parser.tab.h"
+    int line_index = 1;
 %}
 
 %%
@@ -20,11 +21,22 @@
 "/" { return DIV; }
 "(" { return LP; }
 ")" { return RP; }
+ /*
+"<" { return LESS; }
+">" { return GREAT; }
+"==" { return EQ; }
+"!=" { return NEQ; }
+"<=" { return LEQ; }
+">=" { return GEQ; }
+ */
 
-[ \n\t] {};
+[ \t] {};
+\n { line_index++; }
 
 . {
-    fprintf(stderr, "Uknown lexema!!\n");
+    fprintf(stderr, "Error in %s, line %d : \n", __FILE__, line_index);
+    fprintf(stderr, "Uknown lexema -> {%s}\n", yytext);
+    return 1;
 }
 
 %%

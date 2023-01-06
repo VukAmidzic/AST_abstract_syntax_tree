@@ -1,6 +1,7 @@
 #ifndef _AST_H_
 #define _AST_H_
 
+//Macro for easier defining of AST nodes (example: AST_NEW(AST_NUMBER, 1))
 #define AST_NEW(tag, ...) ast_new((AST){tag, {.tag=(struct tag){__VA_ARGS__}}})
 
 typedef struct AST AST; 
@@ -12,7 +13,8 @@ struct AST {
         AST_ADD,
         AST_SUB,
         AST_MUL,
-        AST_IDIV
+        AST_IDIV,
+        //AST_CMP,
     } tag;
     union {
         struct AST_MAIN { AST* body; } AST_MAIN;
@@ -33,6 +35,11 @@ struct AST {
             AST* left;
             AST* right;
         } AST_IDIV;
+        struct AST_CMP {
+            char* type;
+            AST* left;
+            AST* right;
+        } AST_CMP;
     } data;
 };    
 

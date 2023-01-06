@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ast.h"
 
 AST* ast_new(AST ast) {
@@ -61,6 +62,35 @@ void ast_print(AST* ptr) {
             printf(")");
             return;
         }
+        /*case AST_CMP: {
+            struct AST_CMP data = ast.data.AST_CMP;
+            printf("(");
+            ast_print(data.left);
+            
+            if (strcmp(data.type, "great") == 0) {
+                printf(">");
+            }
+            else if (strcmp(data.type, "less") == 0) {
+                printf("<");
+            } 
+            else if (strcmp(data.type, "eq") == 0) {
+                printf("==");
+            }
+            else if (strcmp(data.type, "neq") == 0) {
+                printf("!=");
+            }
+            else if (strcmp(data.type, "leq") == 0) {
+                printf("<=");
+            }
+            else if (strcmp(data.type, "geq") == 0) {
+                printf(">=");
+            }
+            
+            ast_print(data.right);
+            printf(")");
+            return;
+        }*/
+        default: {break;}
     }
 }
 
@@ -71,10 +101,21 @@ void ast_asm_print(AST* ptr, FILE* asm_file) {
         case AST_MAIN: {
             struct AST_MAIN data = ast.data.AST_MAIN;
             fprintf(asm_file, ".intel_syntax noprefix\n");
+            fprintf(asm_file, ".extern printf\n");
+            fprintf(asm_file, ".data\n");
+            fprintf(asm_file, "     format: .asciz \"");
+            fprintf(asm_file, "%c", 37); //37 is ASCII code for '%'
+            fprintf(asm_file, "d\\n\"\n");
             fprintf(asm_file, ".text\n");
             fprintf(asm_file, ".global main\n");
             fprintf(asm_file, "main:\n");
+            fprintf(asm_file, "     push rbx\n");
             ast_asm_print(data.body, asm_file);
+            fprintf(asm_file, "     lea rdi, format\n");
+            fprintf(asm_file, "     mov rsi, rax\n");           
+            fprintf(asm_file, "     xor rax, rax\n"); 
+            fprintf(asm_file, "     call printf\n");
+            fprintf(asm_file, "     pop rbx\n");
             fprintf(asm_file, "     ret\n");
             fprintf(asm_file, "\n");
             return;
@@ -124,5 +165,7 @@ void ast_asm_print(AST* ptr, FILE* asm_file) {
             fprintf(asm_file, "     idiv rbx\n");
             return;
         }
+        //case AST_CMP: {TODO}
+        default: {break;}
     }
 }
