@@ -1,7 +1,9 @@
 ## About
-This is an attempt to make an AST abstract syntax tree in C
-that currently supports addition, subtraction, multiplication
-and division (comparison will be done in the future), and also makes an assembly code.
+This is a rework written in C++ that constructs AST tree and compiles it into assembly code. Basic arithmetic, comparison and logical operations supported, as well as assigning and printing operations.
+
+### Project goals
+ - [ ] (Fix some minor bugs regarding the assembly code
+ - [ ] (Implement if-else statement)
 
 ## Running the program
 First, type
@@ -9,6 +11,7 @@ First, type
 make
 ```
 to compile files and get a parser.
+Until this project gets finished, you can type your program in ``` test.fkc ``` file.
 After that, type
 ```
 make run

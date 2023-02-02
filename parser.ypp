@@ -1,0 +1,143 @@
+%{
+    #include "ast.hpp"
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <cstring>
+    #include <map>
+    
+    #define YYDEBUG 1
+    
+    extern FILE *yyin;
+    
+    extern int yylex();
+    extern int line_index;
+    void yyerror(std::string s) {
+        std::cerr << s << std::endl;
+    }
+    
+    ASTNode* prog = nullptr;
+    static std::map<std::string, std::pair<int, int>> mp;
+    int var_counter = 4;
+%}
+
+%union {
+    std::string* id;
+    int number;
+    ASTNode* node;
+}
+
+%token<number> NUM
+%token<id> ID
+
+%type<node> expr E T F Q S P 
+%type<node> program stmts stmt print assign
+
+%left PLUS MINUS MUL DIV
+%left SHR SHL 
+%right NOT
+
+%token LP RP LBP RBP
+%token GREAT LESS EQ NEQ GEQ LEQ 
+%token AND OR NOT 
+%token SEMIC ASSIGN PRINT
+
+%start program
+%%
+program : stmts {
+            $$ = new MainNode($1);
+            prog = $$;
+        }
+        | {}
+;
+
+stmts   : stmt stmts {
+            auto* assign_node = dynamic_cast<AssignNode*>($1);
+            auto* print_node = dynamic_cast<PrintNode*>($1);
+
+            if (assign_node) {
+                assign_node->next = $2;
+                $$ = assign_node;
+            }
+            else if (print_node) {
+                print_node->next = $2;
+                $$ = print_node;
+            }
+        } 
+        | stmt { $$ = $1; }
+;
+
+stmt    : assign SEMIC { $$ = $1; }
+        | print SEMIC { $$ = $1; }
+;
+
+assign  : ID ASSIGN expr {
+            $$ = new AssignNode(*$1, $3, nullptr);
+            delete $1;
+        }
+;
+
+print   : PRINT LP expr RP {
+            $$ = new PrintNode($3, nullptr);
+        }
+;
+
+expr    : E { $$ = $1; }
+        | {}
+;
+
+E   : E AND T { $$ = new BinaryNode(_AND_, $1, $3); }
+    | E OR T { $$ = new BinaryNode(_OR_, $1, $3); }
+    | NOT T { $$ = new BinaryNode(_NOT_, nullptr, $2); }
+    | T { $$ = $1; }
+;
+
+T   : T LESS F { $$ = new BinaryNode(_LESS_, $1, $3); }
+    | T GREAT F { $$ = new BinaryNode(_GREAT_, $1, $3); }
+    | T EQ F { $$ = new BinaryNode(_EQ_, $1, $3); }
+    | T NEQ F { $$ = new BinaryNode(_NEQ_, $1, $3); }
+    | T LEQ F { $$ = new BinaryNode(_LEQ_, $1, $3); }
+    | T GEQ F { $$ = new BinaryNode(_GEQ_, $1, $3); }
+    | F { $$ = $1; }
+;
+
+F   : F SHR Q { $$ = new BinaryNode(_SHR_, $1, $3); }
+    | F SHL Q { $$ = new BinaryNode(_SHL_, $1, $3); }
+    | Q { $$ = $1; }
+;
+
+Q   : Q PLUS S { $$ = new BinaryNode(_ADD_, $1, $3); }
+    | Q MINUS S { $$ = new BinaryNode(_SUB_, $1, $3); }
+    | S { $$ = $1; }
+;
+
+S   : S MUL P { $$ = new BinaryNode(_MUL_, $1, $3); }
+    | S DIV P { $$ = new BinaryNode(_DIV_, $1, $3); }
+    | P { $$ = $1; }
+;
+
+P   : LP E RP { $$ = $2; }
+    | NUM { $$ = new NumNode($1); }
+    | ID {
+        $$ = new VarNode(*$1);
+        delete $1;
+    }
+;
+%%
+
+int main(int argc, char** argv) {
+    yyin = fopen(argv[1], "r");
+    if (yyin == NULL) {
+        std::cerr << "Could not open given file!!" << std::endl;
+        return 1;
+    }
+    yydebug = 0;
+    
+    yyparse();
+    ASTNode* ptr = prog;
+    
+    traverse_tree(0, ptr, mp, &var_counter);
+    print_asm(ptr, mp);
+    
+    return 0;
+}
