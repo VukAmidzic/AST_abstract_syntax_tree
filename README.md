@@ -2,8 +2,8 @@
 This is a rework written in C++ that constructs AST tree and compiles it into assembly code. Basic arithmetic, comparison and logical operations supported, as well as assigning and printing operations.
 
 ### Project goals
- - [ ] (Fix some minor bugs regarding the assembly code
- - [ ] (Implement if-else statement)
+ - [ ] Fix some minor bugs regarding the assembly code
+ - [ ] Implement if-else statement
 
 ## Running the program
 First, type
