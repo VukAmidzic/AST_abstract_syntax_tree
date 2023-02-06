@@ -2,8 +2,10 @@
 This is a rework written in C++ that constructs AST tree and compiles it into assembly code. Basic arithmetic, comparison and logical operations supported, as well as assigning and printing operations.
 
 ### Project goals
- - [ ] Fix some minor bugs regarding the assembly code
+ - [X] Fix some minor bugs regarding the assembly code
+ - [ ] Find how to do 2's complement in assembly
  - [ ] Implement if-else statement
+ - [ ] Implement loop statement
 
 ## Running the program
 First, type
@@ -16,12 +18,12 @@ After that, type
 ```
 make run
 ```
-to run your created parser.
-The result of parser will be a generated assembly code by AST syntax tree.
+to run program through created parser.
+The result of your program will be stored as a generated assembly code.
 
 At the end, type
 ```
 ./test
 ```
-to see the result of assembly code that will be printed to the terminal :) .
+to see the result of your program that will be printed to the terminal :) .
 

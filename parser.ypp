@@ -134,10 +134,8 @@ int main(int argc, char** argv) {
     yydebug = 0;
     
     yyparse();
-    ASTNode* ptr = prog;
-    
-    traverse_tree(0, ptr, mp, &var_counter);
-    print_asm(ptr, mp);
+    traverse_tree(0, prog, mp, &var_counter);
+    print_asm(prog, mp);
     
     return 0;
 }

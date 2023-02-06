@@ -136,7 +136,7 @@ void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int
         }
         int tmp = expr_eval(assign_node->assign_val, mp); 
         mp[assign_node->var_name] = std::pair<int, int>{tmp, *var_counter};
-        *var_counter += 2;
+        *var_counter += 4;
         std::cout << "#ASSIGN: " << assign_node->var_name << " " << mp[assign_node->var_name].first << std::endl;
         traverse_tree(lvl, assign_node->next, mp, var_counter);
     }
@@ -246,10 +246,10 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
     auto* print_node = dynamic_cast<PrintNode*>(ptr);
     
     if (num_node) {
-        std::cout << "  mov rax," << num_node->num << std::endl;
+        std::cout << "  mov rax, " << num_node->num << std::endl;
     }
     else if (var_node) {
-        std::cout << "  mov rax, QWORD PTR [rbp-" << mp[var_node->var_name].second << "]" << std::endl;
+        std::cout << "  mov rax, QWORD PTR [rbp-" << 2 * mp[var_node->var_name].second << "]" << std::endl;
     }
     else if (bin_op_node) {
         switch (bin_op_node->tag) {
@@ -285,24 +285,19 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 std::cout << "  push rax" << std::endl;
                 std::cout << "  mov rax, rbx" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  cqo" << std::endl;
                 std::cout << "  xor rdx, rdx" << std::endl;
                 std::cout << "  idiv rbx" << std::endl;
                 break;
             }
             case _SHL_ : {
                 print_asm(bin_op_node->left, mp);
-                std::cout << "  push rax" << std::endl;
-                print_asm(bin_op_node->right, mp);
-                std::cout << "  pop rbx" << std::endl;
-                std::cout << "  shl rax, rbx" << std::endl;
+                std::cout << "  shl rax, " << expr_eval(bin_op_node->right, mp) << std::endl;
                 break;
             }
             case _SHR_ : {
                 print_asm(bin_op_node->left, mp);
-                std::cout << "  push rax" << std::endl;
-                print_asm(bin_op_node->right, mp);
-                std::cout << "  pop rbx" << std::endl;
-                std::cout << "  shr rax, rbx" << std::endl;
+                std::cout << "  shr rax, " << expr_eval(bin_op_node->right, mp) << std::endl;
                 break;
             }
             case _AND_ : {
@@ -397,14 +392,14 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
         std::cout << ".text\n" << std::endl;
         std::cout << ".global main" << std::endl;
         std::cout << "main:" << std::endl;
-        std::cout << "  enter 0,0" << std::endl;
+        std::cout << "  enter " << 16 * mp.size() << ", 0" << std::endl;
         print_asm(main_node->next, mp);
         std::cout << "  leave" << std::endl;
         std::cout << "  ret\n" << std::endl;
     }
     else if (assign_node) {
         print_asm(assign_node->assign_val, mp);
-        std::cout << "  mov QWORD PTR [rbp-" << mp[assign_node->var_name].second << "], rax" << std::endl;
+        std::cout << "  mov QWORD PTR [rbp-" << 2 * mp[assign_node->var_name].second << "], rax" << std::endl;
         print_asm(assign_node->next, mp);
     }
     else if (print_node) {
