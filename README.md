@@ -3,7 +3,7 @@ This is a rework written in C++ that constructs AST tree and compiles it into as
 
 ### Project goals
  - [X] Fix some minor bugs regarding the assembly code
- - [ ] Find how to do 2's complement in assembly
+ - [X] Fix subtraction and shifting
  - [ ] Implement if-else statement
  - [ ] Implement loop statement
 

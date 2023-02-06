@@ -265,7 +265,9 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  sub rax, rbx" << std::endl;
                 break;
             }
@@ -325,7 +327,9 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
                 std::cout << "  call cmp_less" << std::endl;  
@@ -335,50 +339,60 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
-                std::cout << "  call cmp_great" << std::endl;
+                std::cout << "  call cmp_great" << std::endl; 
                 break;
             }
             case _EQ_ : {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
-                std::cout << "  call cmp_eq" << std::endl;
+                std::cout << "  call cmp_eq" << std::endl; 
                 break;
             }
             case _NEQ_ : {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
-                std::cout << "  call cmp_neq" << std::endl;
+                std::cout << "  call cmp_neq" << std::endl; 
                 break;
             }
             case _LEQ_ : {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
-                std::cout << "  call cmp_leq" << std::endl;
+                std::cout << "  call cmp_leq" << std::endl; 
                 break;
             }
             case _GEQ_ : {
                 print_asm(bin_op_node->left, mp);
                 std::cout << "  push rax" << std::endl;
                 print_asm(bin_op_node->right, mp);
+                std::cout << "  push rax" << std::endl;
                 std::cout << "  pop rbx" << std::endl;
+                std::cout << "  pop rax" << std::endl;
                 std::cout << "  mov rdi, rax" << std::endl;
                 std::cout << "  mov rsi, rbx" << std::endl;
-                std::cout << "  call cmp_less" << std::endl;
+                std::cout << "  call cmp_geq" << std::endl; 
                 break;
             }
             
