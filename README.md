@@ -27,3 +27,13 @@ At the end, type
 ```
 to see the result of your program that will be printed to the terminal :) .
 
+### Example 
+```
+a := 1;
+b := 2;
+c := 3;
+d := 4;
+
+print(a * b * c * d << 2); //prints 96
+```
+
