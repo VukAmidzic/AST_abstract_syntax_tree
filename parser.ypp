@@ -7,12 +7,14 @@
     #include <map>
     
     #define YYDEBUG 1
+    #define YYERROR_VERBOSE 1
     
     extern FILE *yyin;
     
     extern int yylex();
     extern int line_index;
     void yyerror(std::string s) {
+        std::cerr << "Error in file test.fkc, line " << line_index << ":\n";
         std::cerr << s << std::endl;
     }
     
@@ -128,14 +130,18 @@ P   : LP E RP { $$ = $2; }
 int main(int argc, char** argv) {
     yyin = fopen(argv[1], "r");
     if (yyin == NULL) {
-        std::cerr << "Could not open given file!!" << std::endl;
-        return 1;
+        std::cerr << "Could not open given file..." << std::endl;
+        exit(EXIT_FAILURE);
     }
     yydebug = 0;
     
-    yyparse();
+    if (yyparse() == 1) {
+        std::cerr << "Error during compilation" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
     traverse_tree(0, prog, mp, &var_counter);
     print_asm(prog, mp);
     
-    return 0;
+    exit(EXIT_SUCCESS);
 }

@@ -1,6 +1,7 @@
 %option noyywrap
 %option nounput
 %option noinput
+%x comment 
 %{
     #include <stdio.h>
     #include <stdlib.h>
@@ -56,6 +57,12 @@
     return NUM;
 }
 
+"/*" { BEGIN(comment); }
+<comment>[^*\n]* {}
+<comment>"*"* {}
+<comment>\n { line_index++; }
+<comment>\*+"/" { BEGIN(INITIAL); }
+
 "+" { return PLUS; }
 "-" { return MINUS; }
 "*" { return MUL; }
@@ -79,8 +86,8 @@
 
 "<" { return LESS; }
 ">" { return GREAT; }
-"==" { return EQ; }
-"!=" { return NEQ; }
+"=" { return EQ; }
+"<>" { return NEQ; }
 "<=" { return LEQ; }
 ">=" { return GEQ; }
 

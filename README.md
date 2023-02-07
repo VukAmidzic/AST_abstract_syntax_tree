@@ -4,6 +4,8 @@ This is a rework written in C++ that constructs AST tree and compiles it into as
 ### Project goals
  - [X] Fix some minor bugs regarding the assembly code
  - [X] Fix subtraction and shifting
+ - [X] Made comments
+ - [X] Made error messages verbose
  - [ ] Implement if-else statement
  - [ ] Implement loop statement
 
@@ -12,20 +14,17 @@ First, type
 ```
 make
 ```
-to compile files and get a parser.
+to get a parser.
 Until this project gets finished, you can type your program in ``` test.fkc ``` file.
 After that, type
 ```
+make com
+```
+to compile your program into an assembly code, which you can, later on, run by typing:
+```
 make run
-```
-to run program through created parser.
-The result of your program will be stored as a generated assembly code.
-
-At the end, type
-```
 ./test
 ```
-to see the result of your program that will be printed to the terminal :) .
 
 ### Example 
 ```
