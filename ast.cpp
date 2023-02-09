@@ -127,6 +127,10 @@ void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int
                 std::cout << "#GEQ: " << std::endl;
                 break;
             }
+            case _NEG_ : {
+                std::cout << "#NEG: " << std::endl;
+                break;
+            }
             
             default: break;
         }
@@ -268,6 +272,10 @@ int expr_eval(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
             }
             case _GEQ_ : {
                 result = expr_eval(bin_op_node->left, mp) >= expr_eval(bin_op_node->right, mp);
+                break;
+            }
+            case _NEG_ : {
+                result = -expr_eval(bin_op_node->right, mp);
                 break;
             }
             default: break;
@@ -436,7 +444,12 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 std::cout << "  call cmp_geq" << std::endl; 
                 break;
             }
-            
+            case _NEG_ : {
+                print_asm(bin_op_node->right, mp);
+                std::cout << "  mov r8, -1" << std::endl;
+                std::cout << "  mul r8" << std::endl;
+                break;
+            }
             default: break;
         }
     }

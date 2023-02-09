@@ -23,7 +23,8 @@ enum Tag {
     _GEQ_,
     _AND_,
     _OR_,
-    _NOT_
+    _NOT_,
+    _NEG_
 };
 
 class ASTNode {
