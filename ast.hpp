@@ -2,6 +2,9 @@
 #include <cstddef>
 #include <cstdlib>
 #include <map>
+#include <vector>
+#include <utility>
+
 #ifndef AST_HPP
 #define AST_HPP
 
@@ -72,6 +75,13 @@ public:
     ASTNode* print_val;
     ASTNode* next;
     PrintNode(ASTNode* _print_val, ASTNode* _next);
+};
+
+class IfElseNode : public StatementNode {
+public:
+    std::vector<std::pair<ASTNode*, ASTNode*>> conds;
+    ASTNode* next;
+    IfElseNode(std::vector<std::pair<ASTNode*, ASTNode*>> _conds, ASTNode* _next);
 };
 
 void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter);

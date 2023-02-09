@@ -5,6 +5,10 @@
 #include <type_traits>
 #include <string>
 #include <map>
+#include <vector>
+#include <utility>
+
+const int VAR_STEP = 4;
 
 NumNode::NumNode(int _num) { num = _num; };
 
@@ -31,6 +35,11 @@ PrintNode::PrintNode(ASTNode* _print_val, ASTNode* _next) {
     next = _next;
 };
 
+IfElseNode::IfElseNode(std::vector<std::pair<ASTNode*, ASTNode*>> _conds, ASTNode* _next) {
+    conds = _conds;
+    next = _next;
+};
+
 void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter) {
     auto* num_node = dynamic_cast<NumNode*>(ptr);
     auto* var_node = dynamic_cast<VarNode*>(ptr);
@@ -38,6 +47,7 @@ void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int
     auto* main_node = dynamic_cast<MainNode*>(ptr);
     auto* assign_node = dynamic_cast<AssignNode*>(ptr);
     auto* print_node = dynamic_cast<PrintNode*>(ptr);
+    auto* if_else_node = dynamic_cast<IfElseNode*>(ptr);
     
     if (num_node) {
         for (size_t i = 0; i < lvl; ++i) {
@@ -134,9 +144,16 @@ void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int
         for (size_t i = 0; i < lvl; ++i) {
             std::cout << "\t";
         }
-        int tmp = expr_eval(assign_node->assign_val, mp); 
-        mp[assign_node->var_name] = std::pair<int, int>{tmp, *var_counter};
-        *var_counter += 4;
+        
+        int tmp = expr_eval(assign_node->assign_val, mp);
+        auto it = mp.find(assign_node->var_name);
+        if (it != mp.end()) {
+            mp[assign_node->var_name].first = tmp;
+        }
+        else {
+            mp[assign_node->var_name] = {tmp, *var_counter};
+            *var_counter += VAR_STEP;
+        }
         std::cout << "#ASSIGN: " << assign_node->var_name << " " << mp[assign_node->var_name].first << std::endl;
         traverse_tree(lvl, assign_node->next, mp, var_counter);
     }
@@ -147,6 +164,29 @@ void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int
         int print_value = expr_eval(print_node->print_val, mp);
         std::cout << "#PRINT: " << print_value << std::endl;
         traverse_tree(lvl, print_node->next, mp, var_counter);
+    }
+    else if (if_else_node) {
+        for (size_t i = 0; i < lvl; ++i) {
+            std::cout << "\t";
+        }
+        int n = if_else_node->conds.size();
+        bool found_true = false;
+        int i;
+        for (i = 1; i < n; ++i) {
+            if (expr_eval(if_else_node->conds[i].first, mp)) {
+                found_true = true;
+                break;
+            }
+        }
+        
+        if (found_true) {
+            traverse_tree(lvl + 1, if_else_node->conds[i].second, mp, var_counter);
+        }
+        else {
+            traverse_tree(lvl + 1, if_else_node->conds[0].second, mp, var_counter);
+        }
+        
+        traverse_tree(lvl, if_else_node->next, mp, var_counter);
     }
 };
 
@@ -244,6 +284,7 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
     auto* main_node = dynamic_cast<MainNode*>(ptr);
     auto* assign_node = dynamic_cast<AssignNode*>(ptr);
     auto* print_node = dynamic_cast<PrintNode*>(ptr);
+    auto* if_else_node = dynamic_cast<IfElseNode*>(ptr);
     
     if (num_node) {
         std::cout << "  mov rax, " << num_node->num << std::endl;
@@ -406,7 +447,7 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
         std::cout << ".text\n" << std::endl;
         std::cout << ".global main" << std::endl;
         std::cout << "main:" << std::endl;
-        std::cout << "  enter " << 16 * mp.size() << ", 0" << std::endl;
+        std::cout << "  enter " << 8 * mp.size() << ", 0" << std::endl;
         print_asm(main_node->next, mp);
         std::cout << "  leave" << std::endl;
         std::cout << "  ret\n" << std::endl;
@@ -423,5 +464,25 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
         std::cout << "  xor rax, rax" << std::endl;
         std::cout << "  call printf" << std::endl;
         print_asm(print_node->next, mp);
+    }
+    else if (if_else_node) {
+        int n = if_else_node->conds.size();
+        bool found_true = false;
+        int i;
+        for (i = 1; i < n; ++i) {
+            if (expr_eval(if_else_node->conds[i].first, mp)) {
+                found_true = true;
+                break;
+            }
+        }
+        
+        if (found_true) {
+            print_asm(if_else_node->conds[i].second, mp);
+        }
+        else {
+            print_asm(if_else_node->conds[0].second, mp);
+        }
+        
+        print_asm(if_else_node->next, mp);
     }
 };

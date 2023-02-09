@@ -6,6 +6,8 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include <vector>
+    #include <utility>
     #include "ast.hpp"
     #include "parser.tab.hpp"
     
@@ -46,6 +48,8 @@
 
 %%
 "print" { return PRINT; }
+"if" { return IF; }
+"else" { return ELSE; }
 
 [a-zA-Z][a-zA-Z_0-9]* {
     yylval.id = new std::string(yytext);
@@ -74,8 +78,8 @@
 "(" { return LP; }
 ")" { return RP; }
 
-"{" { return LBP; }
-"}" { return RBP; }
+"{" { return LCP; }
+"}" { return RCP; }
 
 ">>" { return SHR; }
 "<<" { return SHL; }
