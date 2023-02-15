@@ -85,8 +85,16 @@ public:
     IfElseNode(std::vector<std::pair<ASTNode*, ASTNode*>> _conds, ASTNode* _next);
 };
 
+class WhileNode : public StatementNode {
+public:
+    ASTNode* cond;
+    ASTNode* stmts;
+    ASTNode* next;
+    WhileNode(ASTNode* _cond, ASTNode* _stmts, ASTNode* _next);
+};
+
 void traverse_tree(size_t lvl, ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter);
-void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp);
+void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* loop_counter, int* next_counter);
 int expr_eval(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp);
 
 #endif

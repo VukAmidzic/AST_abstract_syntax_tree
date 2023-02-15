@@ -8,7 +8,7 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
  - [X] Make comments
  - [X] Make error messages verbose
  - [X] Implement if-else statement
- - [ ] Implement loop statement
+ - [X] Implement loop statement
 
  
 ### Supported operations and statements
@@ -17,6 +17,8 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
 - arithmetic operations
 - logical and bitwise operations
 - nested if-else statements
+- loop statements
+(Note: mixed if-else and loop statements not working properly and need further fixing)
 
  
 ## Running the program
@@ -40,33 +42,23 @@ starting from ```make com``` command.
 
 ### Example 
 ```
-/* 
-    possible multiple assignment to
-    same variable without losing the data 
-*/
-a := 2;
-b := (a << 2) - 1;
-a := b * b;
+a := 1;
+b := a << 5;
 
-/* 
-    possible nested if-else statements 
-*/
-if (b = 8) {
-    c := 0;
-    
-    if (b - b/2*2 = 0) {
-        c := 1;
-    }
-    else {
-        c := 0;
-    };
-} else {
+print(b);
+
+if (b < 10) {
+    c := b;
+}
+else {
     c := 10;
 };
 
-print(a); /* prints 49 */
-print(b); /* prints 7 */
-print(c); /* prints 10 */
-print(a + b + c); /* prints 66 */
+d := c;
+
+while (d > 0) {
+    print(d);
+    d := d - 1;
+};
 ```
 

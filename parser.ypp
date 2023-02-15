@@ -12,6 +12,13 @@
     #define YYDEBUG 1
     #define YYERROR_VERBOSE 1
     
+    #define check_error(cond, msg) {\
+        if (!(cond)) {\
+            std::cerr << msg << std::endl;\
+            exit(EXIT_FAILURE);\
+        }\
+    }\
+    
     extern FILE *yyin;
     
     extern int yylex();
@@ -24,6 +31,8 @@
     ASTNode* prog = nullptr;
     static std::map<std::string, std::pair<int, int>> mp;
     int var_counter = 4;
+    int loop_counter = 0;
+    int next_counter = 0;
 %}
 
 %union {
@@ -37,7 +46,7 @@
 %token<id> ID
 
 %type<node> expr E T F Q S P N
-%type<node> program stmts stmt print assign if_else
+%type<node> program stmts stmt print assign if_else while_stmt
 %type<els> else_stmt
 
 %left PLUS MINUS MUL DIV
@@ -48,7 +57,7 @@
 %token GREAT LESS EQ NEQ GEQ LEQ 
 %token AND OR NOT 
 %token SEMIC ASSIGN PRINT 
-%token IF ELSE
+%token IF ELSE WHILE
 
 %start program
 %%
@@ -63,6 +72,7 @@ stmts   : stmt stmts {
             auto* assign_node = dynamic_cast<AssignNode*>($1);
             auto* print_node = dynamic_cast<PrintNode*>($1);
             auto* if_else_node = dynamic_cast<IfElseNode*>($1);
+            auto* while_node = dynamic_cast<WhileNode*>($1);
 
             if (assign_node) {
                 assign_node->next = $2;
@@ -76,6 +86,10 @@ stmts   : stmt stmts {
                 if_else_node->next = $2;
                 $$ = if_else_node;
             }
+            else if (while_node) {
+                while_node->next = $2;
+                $$ = while_node;
+            }
         } 
         | stmt { $$ = $1; }
 ;
@@ -83,6 +97,12 @@ stmts   : stmt stmts {
 stmt    : assign SEMIC { $$ = $1; }
         | print SEMIC { $$ = $1; }
         | if_else SEMIC { $$ = $1; }
+        | while_stmt SEMIC { $$ = $1; }
+;
+
+while_stmt  : WHILE LP expr RP LCP stmts RCP {
+                $$ = new WhileNode($3, $6, nullptr);
+            }
 ;
 
 if_else : IF LP expr RP LCP stmts RCP {
@@ -176,20 +196,16 @@ N   : LP E RP { $$ = $2; }
 %%
 
 int main(int argc, char** argv) {
+    check_error(argc == 2, "Incorrect number of program arguments...");
+    
     yyin = fopen(argv[1], "r");
-    if (yyin == NULL) {
-        std::cerr << "Could not open given file..." << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    check_error(yyin != NULL, "Could not open given input file...");
     yydebug = 0;
     
-    if (yyparse() == 1) {
-        std::cerr << "Error during compilation" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    check_error(yyparse() != 1, "Error during compilation...");
     
     traverse_tree(0, prog, mp, &var_counter);
-    print_asm(prog, mp);
+    print_asm(prog, mp, &loop_counter, &next_counter);
     
     exit(EXIT_SUCCESS);
 }
