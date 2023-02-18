@@ -429,33 +429,36 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int
         if (n == 1) {
             std::cout << "if_else" << (*if_counter) << ":" << std::endl;
             print_asm(if_else_node->conds[0].first, mp, loop_counter, main_counter, cond_counter, if_counter);
-                std::cout << "  cmp rax, 1" << std::endl;
-                std::cout << "  je cond" << (*cond_counter) << std::endl;
-                if (next_if_else_node) {
-                    std::cout << "  jmp if_else" << (*if_counter + 1) << std::endl; 
-                }
-                else if (next_while_node) {
-                    std::cout << "  jmp loop" << (*loop_counter) << std::endl;
-                }
-                else {
-                    std::cout << "  jmp main" << (*main_counter) << std::endl;
-                }
-                std::cout << "  cond" << (*cond_counter) << ":" << std::endl;
-                print_asm(if_else_node->conds[0].second, mp, loop_counter, main_counter, cond_counter, if_counter);
-                if (next_if_else_node) {
-                    std::cout << "  jmp if_else" << (*if_counter + 1) << std::endl; 
-                }
-                else if (next_while_node) {
-                    std::cout << "  jmp loop" << (*loop_counter) << std::endl;
-                }
-                else {
-                    std::cout << "  jmp main" << (*main_counter) << std::endl;
-                }
+            std::cout << "  cmp rax, 1" << std::endl;
+            std::cout << "  je cond" << (*cond_counter) << std::endl;
+            if (next_if_else_node) {
+                std::cout << "  jmp if_else" << (*if_counter + 1) << std::endl; 
+            }
+            else if (next_while_node) {
+                std::cout << "  jmp loop" << (*loop_counter) << std::endl;
+            }
+            else {
+                std::cout << "  jmp main" << (*main_counter) << std::endl;
+            }
+            std::cout << "cond" << (*cond_counter) << ":" << std::endl;
+            int tmp_1 = *main_counter + 1;
+            int tmp_2 = *cond_counter + n;
+            int tmp_3 = *if_counter + 1; 
+            print_asm(if_else_node->conds[0].second, mp, loop_counter, &tmp_1, &tmp_2, &tmp_3);
+            if (next_if_else_node) {
+                std::cout << "  jmp if_else" << (*if_counter + 1) << std::endl; 
+            }
+            else if (next_while_node) {
+                std::cout << "  jmp loop" << (*loop_counter) << std::endl;
+            }
+            else {
+                std::cout << "  jmp main" << (*main_counter) << std::endl;
                 std::cout << "main" << (*main_counter) << ":" << std::endl;
-                int tmp_1 = *main_counter + 1;
-                int tmp_2 = *cond_counter + n;
-                int tmp_3 = *if_counter + 1;
-                print_asm(if_else_node->next, mp, loop_counter, &tmp_1, &tmp_2, &tmp_3);
+            }
+            tmp_1 = *main_counter + 1;
+            tmp_2 = *cond_counter + n;
+            tmp_3 = *if_counter + 1;
+            print_asm(if_else_node->next, mp, loop_counter, &tmp_1, &tmp_2, &tmp_3);
         }
         else {
             std::cout << "if_else" << (*if_counter) << ":" << std::endl;
@@ -468,7 +471,10 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int
             
             for (int i = 1; i < n; ++i) {
                 std::cout << "  cond" << (*cond_counter + i - 1) << ":" << std::endl;
-                print_asm(if_else_node->conds[i].second, mp, loop_counter, main_counter, cond_counter, if_counter);
+                int tmp_1 = *main_counter + 1;
+                int tmp_2 = *cond_counter + n;
+                int tmp_3 = *if_counter + 1;
+                print_asm(if_else_node->conds[i].second, mp, loop_counter, &tmp_1, &tmp_2, &tmp_3);
                 
                 if (next_if_else_node) {
                     std::cout << "  jmp if_else" << (*if_counter + 1) << std::endl; 
