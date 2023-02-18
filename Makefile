@@ -9,7 +9,7 @@ parser.tab.hpp parser.tab.cpp: parser.ypp
 
 .PHONY: clean run com
 run:
-	gcc asm_ops.c test.s -fno-pie -no-pie -g -o test 
+	gcc asm_ops.c test.s -O3 -fno-pie -no-pie -g -o test 
 
 com:
 	./parser test.fkc > test.s || (exit 0)

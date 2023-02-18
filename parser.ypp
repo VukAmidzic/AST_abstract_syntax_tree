@@ -32,7 +32,9 @@
     static std::map<std::string, std::pair<int, int>> mp;
     int var_counter = 4;
     int loop_counter = 0;
-    int next_counter = 0;
+    int main_counter = 0;
+    int cond_counter = 0;
+    int if_counter = 0;
 %}
 
 %union {
@@ -204,8 +206,9 @@ int main(int argc, char** argv) {
     
     check_error(yyparse() != 1, "Error during compilation...");
     
-    traverse_tree(0, prog, mp, &var_counter);
-    print_asm(prog, mp, &loop_counter, &next_counter);
+    traverse_tree(prog, mp, &var_counter);
+    print_asm(prog, mp, &loop_counter, &main_counter, &cond_counter, &if_counter);
+    
     
     exit(EXIT_SUCCESS);
 }
