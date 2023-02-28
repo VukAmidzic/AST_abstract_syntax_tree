@@ -31,10 +31,10 @@
     ASTNode* prog = nullptr;
     static std::map<std::string, std::pair<int, int>> mp;
     int var_counter = 4;
-    int loop_counter = 0;
     int main_counter = 0;
-    int cond_counter = 0;
+    int loop_counter = 0;
     int if_counter = 0;
+    int cond_counter = 0;
 %}
 
 %union {
@@ -103,17 +103,19 @@ stmt    : assign SEMIC { $$ = $1; }
 ;
 
 while_stmt  : WHILE LP expr RP LCP stmts RCP {
-                $$ = new WhileNode($3, $6, nullptr);
+                $$ = new WhileNode(0, $3, $6, nullptr);
             }
 ;
 
 if_else : IF LP expr RP LCP stmts RCP {
             std::vector<std::pair<ASTNode*, ASTNode*>> _conds;
             _conds.push_back({$3, $6});
-            $$ = new IfElseNode(_conds, nullptr);
+            std::vector<int> tmp = {};
+            $$ = new IfElseNode(0, _conds, tmp, nullptr);
         }
         | IF LP expr RP LCP stmts RCP else_stmt {
-            $$ = new IfElseNode(*$8, nullptr);
+            std::vector<int> tmp = {};
+            $$ = new IfElseNode(0, *$8, tmp, nullptr);
             
             auto* if_else_node = dynamic_cast<IfElseNode*>($$);
             
@@ -206,8 +208,8 @@ int main(int argc, char** argv) {
     
     check_error(yyparse() != 1, "Error during compilation...");
     
-    traverse_tree(prog, mp, &var_counter);
-    print_asm(prog, mp, &loop_counter, &main_counter, &cond_counter, &if_counter);
+    traverse_tree(prog, mp, &var_counter, &loop_counter, &if_counter, &cond_counter);
+    print_asm(prog, mp, &main_counter);
     
     
     exit(EXIT_SUCCESS);

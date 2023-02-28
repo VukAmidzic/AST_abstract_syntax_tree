@@ -49,7 +49,11 @@ public:
     Tag tag;
     ASTNode* left;
     ASTNode* right;
-    BinaryNode(Tag _tag, ASTNode* _left, ASTNode* _right);
+    BinaryNode(
+        Tag _tag,
+        ASTNode* _left,
+        ASTNode* _right
+    );
 };
 
 class MainNode : public ASTNode {
@@ -68,32 +72,53 @@ class AssignNode : public StatementNode {
 public:
     std::string var_name;
     ASTNode* assign_val;  
-    AssignNode(std::string _var_name, ASTNode* _assign_val, ASTNode* _next);
+    AssignNode(
+        std::string _var_name,
+        ASTNode* _assign_val,
+        ASTNode* _next
+    );
 };
 
 class PrintNode : public StatementNode {
 public:
     ASTNode* print_val; 
-    PrintNode(ASTNode* _print_val, ASTNode* _next);
+    PrintNode(
+        ASTNode* _print_val,
+        ASTNode* _next
+    );
 };
 
 class IfElseNode : public StatementNode {
 public:
+    int if_num;
     std::vector<std::pair<ASTNode*, ASTNode*>> conds; 
-    IfElseNode(std::vector<std::pair<ASTNode*, ASTNode*>> _conds, ASTNode* _next);
+    std::vector<int> cond_num;
+    IfElseNode(
+        int _if_num,
+        std::vector<std::pair<ASTNode*, ASTNode*>> _conds,
+        std::vector<int> _cond_num,
+        ASTNode* _next
+    );
 };
 
 class WhileNode : public StatementNode {
 public:
+    int while_num;
     ASTNode* cond;
     ASTNode* stmts;
-    WhileNode(ASTNode* _cond, ASTNode* _stmts, ASTNode* _next);
+    WhileNode(
+        int while_num,
+        ASTNode* _cond, 
+        ASTNode* _stmts, 
+        ASTNode* _next
+    );
 };
 
 int expr_eval(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp);
 
-void traverse_tree(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter);
+void traverse_tree(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter, 
+                   int* loop_counter, int* if_counter, int* cond_counter);
 
-void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* loop_counter, int* main_counter, int* cond_counter, int* if_counter);
+void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* main_counter);
 
 #endif
