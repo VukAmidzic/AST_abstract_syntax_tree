@@ -16,11 +16,8 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
 - printing 
 - arithmetic operations
 - logical and bitwise operations
-- nested if-else statements
-- loop statements
-(Note: mixed if-else and loop statements working but combined multiple if-else statements not working properly and 
-need fix)
-
+- loop and if-else statements (individually or nested)
+ 
  
 ## Running the program
 First, type

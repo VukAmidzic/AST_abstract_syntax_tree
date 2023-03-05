@@ -103,7 +103,7 @@ stmt    : assign SEMIC { $$ = $1; }
 ;
 
 while_stmt  : WHILE LP expr RP LCP stmts RCP {
-                $$ = new WhileNode(0, $3, $6, nullptr);
+                $$ = new WhileNode(0, 0, $3, $6, nullptr);
             }
 ;
 
@@ -111,11 +111,11 @@ if_else : IF LP expr RP LCP stmts RCP {
             std::vector<std::pair<ASTNode*, ASTNode*>> _conds;
             _conds.push_back({$3, $6});
             std::vector<int> tmp = {};
-            $$ = new IfElseNode(0, _conds, tmp, nullptr);
+            $$ = new IfElseNode(0, 0, _conds, tmp, nullptr);
         }
         | IF LP expr RP LCP stmts RCP else_stmt {
             std::vector<int> tmp = {};
-            $$ = new IfElseNode(0, *$8, tmp, nullptr);
+            $$ = new IfElseNode(0, 0, *$8, tmp, nullptr);
             
             auto* if_else_node = dynamic_cast<IfElseNode*>($$);
             
@@ -208,8 +208,8 @@ int main(int argc, char** argv) {
     
     check_error(yyparse() != 1, "Error during compilation...");
     
-    traverse_tree(prog, mp, &var_counter, &loop_counter, &if_counter, &cond_counter);
-    print_asm(prog, mp, &main_counter);
+    traverse_tree(prog, mp, &var_counter, &loop_counter, &if_counter, &cond_counter, &main_counter);
+    print_asm(prog, mp);
     
     
     exit(EXIT_SUCCESS);

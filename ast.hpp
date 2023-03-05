@@ -56,16 +56,15 @@ public:
     );
 };
 
-class MainNode : public ASTNode {
-public:
-    ASTNode* next;
-    MainNode(ASTNode* _next);
-};
-
 class StatementNode : public ASTNode {
 public: 
     virtual ~StatementNode() = default;
     ASTNode* next;
+};
+
+class MainNode : public StatementNode {
+public:
+    MainNode(ASTNode* _next);
 };
 
 class AssignNode : public StatementNode {
@@ -91,10 +90,12 @@ public:
 class IfElseNode : public StatementNode {
 public:
     int if_num;
+    int main_num;
     std::vector<std::pair<ASTNode*, ASTNode*>> conds; 
     std::vector<int> cond_num;
     IfElseNode(
         int _if_num,
+        int _main_num,
         std::vector<std::pair<ASTNode*, ASTNode*>> _conds,
         std::vector<int> _cond_num,
         ASTNode* _next
@@ -104,10 +105,12 @@ public:
 class WhileNode : public StatementNode {
 public:
     int while_num;
+    int main_num;
     ASTNode* cond;
     ASTNode* stmts;
     WhileNode(
-        int while_num,
+        int _while_num,
+        int _main_num,
         ASTNode* _cond, 
         ASTNode* _stmts, 
         ASTNode* _next
@@ -117,8 +120,8 @@ public:
 int expr_eval(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp);
 
 void traverse_tree(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* var_counter, 
-                   int* loop_counter, int* if_counter, int* cond_counter);
+                   int* loop_counter, int* if_counter, int* cond_counter, int* main_counter);
 
-void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp, int* main_counter);
+void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp);
 
 #endif
