@@ -51,7 +51,7 @@
 %type<node> program stmts stmt print assign if_else while_stmt
 %type<els> else_stmt
 
-%left PLUS MINUS MUL DIV
+%left PLUS MINUS MUL DIV MOD
 %left SHR SHL 
 %right NOT UMINUS
 
@@ -183,6 +183,7 @@ Q   : Q PLUS S { $$ = new BinaryNode(_ADD_, $1, $3); }
 
 S   : S MUL P { $$ = new BinaryNode(_MUL_, $1, $3); }
     | S DIV P { $$ = new BinaryNode(_DIV_, $1, $3); }
+    | S MOD P { $$ = new BinaryNode(_MOD_, $1, $3); }
     | P { $$ = $1; }
 ;
 

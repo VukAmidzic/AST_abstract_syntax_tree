@@ -13,6 +13,7 @@ enum Tag {
     _SUB_,
     _MUL_,
     _DIV_,
+    _MOD_,
     _SHL_,
     _SHR_,
     _LESS_,

@@ -9,6 +9,15 @@
 #include <vector>
 #include <utility>
 
+/* NOTE (when committing)
+ * - added mod operation 
+ * 
+ * TODO 
+ * - add line_numbers to each node in 
+ * order to write a better error msg
+ */
+
+
 const int VAR_STEP = 4;
 
 NumNode::NumNode(int _num) { num = _num; };
@@ -300,6 +309,20 @@ void print_asm(ASTNode* ptr, std::map<std::string, std::pair<int, int>>& mp) {
                 std::cout << "  cqo" << std::endl;
                 std::cout << "  xor rdx, rdx" << std::endl;
                 std::cout << "  idiv rbx" << std::endl;
+                break;
+            }
+            case _MOD_ : {
+                print_asm(bin_op_node->left, mp);
+                std::cout << "  push rax" << std::endl;
+                print_asm(bin_op_node->right, mp);
+                std::cout << "  pop rbx" << std::endl;
+                std::cout << "  push rax" << std::endl;
+                std::cout << "  mov rax, rbx" << std::endl;
+                std::cout << "  pop rbx" << std::endl;
+                std::cout << "  cqo" << std::endl;
+                std::cout << "  xor rdx, rdx" << std::endl;
+                std::cout << "  idiv rbx" << std::endl;
+                std::cout << "  mov rax, rdx" << std::endl;
                 break;
             }
             case _SHL_ : {
