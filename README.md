@@ -61,8 +61,6 @@ make run
 Any change made to the ``` test.fkc ``` file requires repeating the previous steps
 starting from ```make com``` command.
 
----
-
 ### Example 
 
 ```
