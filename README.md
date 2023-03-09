@@ -1,15 +1,42 @@
 ## About
-This is a personal hobby-made language written in C++ together with Flex/Bison tools. The goal is to simulate the translation of the programming language into assembly code through the syntax tree and its execution.
+This is a personal hobby-made language written in C++ together with Flex/Bison tools. The goal is to simulate the translation of the programming language into assembly code through the syntax tree and to execute it.
 
+```mermaid 
+	graph TB
+		S1:::mainClass
+		S2:::mainClass
+		S3:::mainClass
+		S1 -.-> S2 -.-> S3
+		classDef mainClass font-size: 17px;
+
+		subgraph S1["Frontend"]
+			direction TB;
+			A(Source code) --Lexer--> B(Words)
+			B(Words) --Parser--> C(AST)
+		end
+		subgraph S2["Middle end"]
+			direction TB;
+			D(AST) --Semantic analysis-->E(Data-flow graph)
+		end
+		subgraph S3["Backend"]
+			direction TB;
+			F(Data-flow graph) --Traversing graph--> G(Machine code)
+		end
+```
+
+
+
+---
+
+## Some info
 
 ### Project goals
  - [X] Fix some minor bugs regarding the assembly code
  - [X] Fix subtraction and shifting
  - [X] Make comments
  - [X] Make error messages verbose
- - [X] Implement if-else statement
+ - [x] Implement if-else statement
  - [X] Implement loop statement
-
  
 ### Supported operations and statements
 - assignment
@@ -18,8 +45,10 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
 - logical and bitwise operations
 - loop and if-else statements (individually or nested)
  
- 
+---
+
 ## Running the program
+
 First, type
 ```
 make
@@ -38,7 +67,10 @@ make run
 Any change made to the ``` test.fkc ``` file requires repeating the previous steps
 starting from ```make com``` command.
 
+---
+
 ### Example 
+
 ```
 a := 1;
 b := a << 5;
