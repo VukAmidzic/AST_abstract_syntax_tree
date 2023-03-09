@@ -24,10 +24,6 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
 		end
 ```
 
-
-
----
-
 ## Some info
 
 ### Project goals
@@ -44,8 +40,6 @@ This is a personal hobby-made language written in C++ together with Flex/Bison t
 - arithmetic operations
 - logical and bitwise operations
 - loop and if-else statements (individually or nested)
- 
----
 
 ## Running the program
 
